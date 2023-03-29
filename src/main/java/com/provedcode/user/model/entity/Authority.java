@@ -6,9 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 @Getter
 @Setter
 @Entity
@@ -20,6 +17,6 @@ public class Authority {
     private Long id;
     @NotEmpty
     @NotNull
-    @Column(name = "authority", length = 50)
+    @Column(name = "authority", length = 20)
     private String authority;
 }
