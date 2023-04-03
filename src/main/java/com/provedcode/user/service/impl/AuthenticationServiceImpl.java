@@ -1,7 +1,7 @@
 package com.provedcode.user.service.impl;
 
 import com.provedcode.talent.model.entity.Talent;
-import com.provedcode.talent.repo.db.TalentEntityRepository;
+import com.provedcode.talent.repo.TalentRepository;
 import com.provedcode.user.model.Role;
 import com.provedcode.user.model.dto.RegistrationDTO;
 import com.provedcode.user.model.dto.SessionInfoDTO;
@@ -37,7 +37,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 public class AuthenticationServiceImpl implements AuthenticationService {
     JwtEncoder jwtEncoder;
     UserInfoRepository userInfoRepository;
-    TalentEntityRepository talentEntityRepository;
+    TalentRepository talentEntityRepository;
     UserAuthorityRepository userAuthorityRepository;
     AuthorityRepository authorityRepository;
     PasswordEncoder passwordEncoder;
@@ -90,7 +90,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(60, MINUTES))
+                .expiresAt(now.plus(5, MINUTES))
                 .subject(name)
                 .claim("scope", authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" ")))
                 .build();
