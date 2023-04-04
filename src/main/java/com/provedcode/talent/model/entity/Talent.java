@@ -2,7 +2,6 @@ package com.provedcode.talent.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.URL;

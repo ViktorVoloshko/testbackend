@@ -38,12 +38,16 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+    //http://localhost:8080/swagger-ui/index.html
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
                 .requestMatchers("/actuator/health").permitAll() // for DevOps
                 .requestMatchers(antMatcher("/h2/**")).permitAll()
                 .requestMatchers(antMatcher("/api/talents/**")).permitAll()
+                .requestMatchers(antMatcher("/v3/api-docs/**")).permitAll() // for openAPI
+                .requestMatchers(antMatcher("/swagger-ui/**")).permitAll() // for openAPI
+                .requestMatchers(antMatcher("/swagger-ui.html")).permitAll() // for openAPI
                 .anyRequest().authenticated()
         );
 
@@ -53,10 +57,10 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(STATELESS);
 
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-            .exceptionHandling(c -> c
-                    .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                    .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
-            );
+                .exceptionHandling(c -> c
+                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
+                );
 
         return http.build();
     }
@@ -89,8 +93,8 @@ public class SecurityConfig {
             UserInfoMapper mapper
     ) {
         return login -> repository.findByLogin(login)
-                                  .map(mapper::toUserDetails)
-                                  .orElseThrow(() -> new UsernameNotFoundException(login + " not found"));
+                .map(mapper::toUserDetails)
+                .orElseThrow(() -> new UsernameNotFoundException(login + " not found"));
     }
 
     @Bean
