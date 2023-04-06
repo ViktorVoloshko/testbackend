@@ -39,17 +39,9 @@ public class Talent {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TalentLink> talentLinks = new ArrayList<>();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TalentSkill> talentSkills = new ArrayList<>();
+    private List<TalentTalents> talentTalents = new ArrayList<>();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TalentContact> talentContacts = new ArrayList<>();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TalentAttachedFile> talentAttachedFiles = new ArrayList<>();
-
-    public void addTalentSkill(TalentSkill talentSkill) {
-        talentSkills.add(talentSkill);
-    }
-
-    public void removeTalentSkill(TalentSkill talentSkill) {
-        talentSkills.remove(talentSkill);
-    }
 }

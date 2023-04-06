@@ -1,11 +1,10 @@
 insert into authority (id, authority)
-values (1, 'ROLE_TALENT');
--- FOR USER AUTHORITY
--- SELECT USER_INFO.ID , LOGIN , PASSWORD, USER_ID , AUTHORITY FROM
---     USER_INFO
---         JOIN USER_AUTHORITY ON USER_ID = USER_INFO.ID
---         JOIN AUTHORITY ON AUTHORITY.ID = AUTHORITY_ID
-
+values (1, 'TALENT');
+-- -- FOR USER AUTHORITY
+-- -- SELECT USER_INFO.ID , LOGIN , PASSWORD, talent_id , AUTHORITY FROM
+-- --     USER_INFO
+-- --         JOIN user_authorities ON talent_id = USER_INFO.ID
+-- --         JOIN AUTHORITY ON AUTHORITY.ID = id
 
 insert into talent (first_name, last_name, specialization, image)
 values ('Serhii', 'Soloviov', 'Java-Developer', 'https://i.pinimg.com/564x/e1/08/49/e10849923a8b2e85a7adf494ebd063e6.jpg');
@@ -17,13 +16,13 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Java Core');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Spring Core');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Spring boot');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'H2 Database');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'first_contact');
@@ -32,15 +31,21 @@ values ((select id from talent order by id desc limit 1), 'second_contact');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
+insert into talent_proofs (talent_id, link, text, status, created)
+values ((select id from talent order by id desc limit 1), 'http://first_link', 'text to first proof', 'PUBLISHED', '2023-06-04 16:00:19');
+insert into talent_proofs (talent_id, link, text, status, created)
+values ((select id from talent order by id desc limit 1), 'http://second_link', 'text to second proof', 'DRAFT', '2023-06-04 16:00:19');
+insert into talent_proofs (talent_id, link, text, status, created)
+values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2023-06-04 16:00:19');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'SerhiiSoloviov', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -54,13 +59,13 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://MykhailoOrdyntsev_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://MykhailoOrdyntsev_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Java Core');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Hibernate');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Spring Boot');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Git');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'MykhailoOrdyntsev_first_contact');
@@ -69,15 +74,21 @@ values ((select id from talent order by id desc limit 1), 'MykhailoOrdyntsev_sec
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'MykhailoOrdyntsev_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'MykhailoOrdyntsev_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'MykhailoOrdyntsev_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'MykhailoOrdyntsev_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
+insert into talent_proofs (talent_id, link, text, status, created)
+values ((select id from talent order by id desc limit 1), 'http://first_link', 'text to first proof', 'DRAFT', '2023-06-04 16:00:19');
+insert into talent_proofs (talent_id, link, text, status, created)
+values ((select id from talent order by id desc limit 1), 'http://second_link', 'text to second proof', 'DRAFT', '2023-06-04 16:00:19');
+insert into talent_proofs (talent_id, link, text, status, created)
+values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2023-06-04 16:00:19');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'MykhailoOrdyntsev', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -91,11 +102,11 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://DenisBoyko_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://DenisBoyko_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Java Core');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Spring Security');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Spring Core');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'DenisBoyko_first_contact');
@@ -104,15 +115,21 @@ values ((select id from talent order by id desc limit 1), 'DenisBoyko_second_con
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'DenisBoyko_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'DenisBoyko_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'DenisBoyko_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'DenisBoyko_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
+insert into talent_proofs (talent_id, link, text, status, created)
+values ((select id from talent order by id desc limit 1), 'http://first_link', 'text to first proof', 'DRAFT', '2023-06-04 16:00:19');
+insert into talent_proofs (talent_id, link, text, status, created)
+values ((select id from talent order by id desc limit 1), 'http://second_link', 'text to second proof', 'DRAFT', '2023-06-04 16:00:19');
+insert into talent_proofs (talent_id, link, text, status, created)
+values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2023-06-04 16:00:19');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'DenisBoyko', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -126,9 +143,9 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://IhorShchurenko_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://IhorShchurenko_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Java Core');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'REST API');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'IhorShchurenko_first_contact');
@@ -137,15 +154,15 @@ values ((select id from talent order by id desc limit 1), 'IhorShchurenko_second
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'IhorShchurenko_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'IhorShchurenko_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'IhorShchurenko_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'IhorShchurenko_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'DmytroUzun', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -159,11 +176,11 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://DmytroUzun_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://DmytroUzun_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Git');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Docker');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Mentor');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'DmytroUzun_first_contact');
@@ -172,15 +189,15 @@ values ((select id from talent order by id desc limit 1), 'DmytroUzun_second_con
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'DmytroUzun_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'DmytroUzun_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'DmytroUzun_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'DmytroUzun_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'DmytroUzun', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -194,9 +211,9 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://ViktorVoloshko_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://ViktorVoloshko_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Git');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Docker');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'ViktorVoloshko_first_contact');
@@ -205,15 +222,15 @@ values ((select id from talent order by id desc limit 1), 'ViktorVoloshko_second
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'ViktorVoloshko_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'ViktorVoloshko_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'ViktorVoloshko_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'ViktorVoloshko_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'ViktorVoloshko', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -227,11 +244,11 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://OlhaMoiseienko_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://OlhaMoiseienko_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Git');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Jira');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'QA');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'OlhaMoiseienko_first_contact');
@@ -240,15 +257,15 @@ values ((select id from talent order by id desc limit 1), 'OlhaMoiseienko_second
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'OlhaMoiseienko_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'OlhaMoiseienko_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'OlhaMoiseienko_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'OlhaMoiseienko _third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'OlhaMoiseienko', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -262,9 +279,9 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://MaximKiyashko_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://MaximKiyashko_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Git');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'QA');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'MaximKiyashko_first_contact');
@@ -273,15 +290,15 @@ values ((select id from talent order by id desc limit 1), 'MaximKiyashko_second_
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'MaximKiyashko_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'MaximKiyashko_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'MaximKiyashko_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'MaximKiyashko_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'MaximKiyashko', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -295,12 +312,12 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://NikolaievOleksii_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://NikolaievOleksii_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'QA');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Git');
-insert into talent_skill (talent_id, skill)
-values ((select id from talent order by id desc limit 1), 'NikolaievOleksii_third_skill');
+insert into talent_talents (talent_id, talent_name)
+values ((select id from talent order by id desc limit 1), 'NikolaievOleksii_third_talents');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'NikolaievOleksii_first_contact');
 insert into talent_contact (talent_id, contact)
@@ -308,15 +325,15 @@ values ((select id from talent order by id desc limit 1), 'NikolaievOleksii_seco
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'NikolaievOleksii_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'NikolaievOleksii_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'NikolaievOleksii_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'NikolaievOleksiio_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'NikolaievOleksiio', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -330,9 +347,9 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://ArtemLytvynenko_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://ArtemLytvynenko_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'QA');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Git');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'ArtemLytvynenko_first_contact');
@@ -341,15 +358,15 @@ values ((select id from talent order by id desc limit 1), 'ArtemLytvynenko_secon
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'ArtemLytvynenko_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'ArtemLytvynenko_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'ArtemLytvynenko_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'ArtemLytvynenko_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'ArtemLytvynenko', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -363,9 +380,9 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://DaniilYevtukhov_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://DaniilYevtukhov_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'JavaScript Core');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'React');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'DaniilYevtukhov_first_contact');
@@ -374,15 +391,15 @@ values ((select id from talent order by id desc limit 1), 'DaniilYevtukhov_secon
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'DaniilYevtukhov_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'DaniilYevtukhov_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'DaniilYevtukhov_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'DaniilYevtukhov_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'DaniilYevtukhov', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -396,11 +413,11 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://RuslanMorozov_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://RuslanMorozov_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'JavaScript Core');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'React');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Node.js');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'RuslanMorozov_first_contact');
@@ -409,15 +426,15 @@ values ((select id from talent order by id desc limit 1), 'RuslanMorozov_second_
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'RuslanMorozov_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'RuslanMorozov_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'RuslanMorozov_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'RuslanMorozov_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'RuslanMorozov', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
 
@@ -431,11 +448,11 @@ insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://IhorKopieichykov_second_link');
 insert into talent_link (talent_id, link)
 values ((select id from talent order by id desc limit 1), 'http://IhorKopieichykov_third_link');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'JavaScript Core');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'React');
-insert into talent_skill (talent_id, skill)
+insert into talent_talents (talent_id, talent_name)
 values ((select id from talent order by id desc limit 1), 'Angular');
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'IhorKopieichykov_first_contact');
@@ -444,14 +461,14 @@ values ((select id from talent order by id desc limit 1), 'IhorKopieichykov_seco
 insert into talent_contact (talent_id, contact)
 values ((select id from talent order by id desc limit 1), 'IhorKopieichykov_third_contact');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'IhorKopieichykov_first_file');
+values ((select id from talent order by id desc limit 1), 'http://first_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'IhorKopieichykov_second_file');
+values ((select id from talent order by id desc limit 1), 'http://second_file');
 insert into talent_attached_file (talent_id, attached_file)
-values ((select id from talent order by id desc limit 1), 'IhorKopieichykov_third_file');
+values ((select id from talent order by id desc limit 1), 'http://third_file');
 
-insert into user_info (user_id, login, password)
+insert into user_info (talent_id, login, password)
 values ((select id from talent order by id desc limit 1), 'IhorKopieichykov', 'password');
-insert into user_authority (user_id, authority_id)
+insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
