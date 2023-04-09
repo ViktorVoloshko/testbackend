@@ -6,6 +6,7 @@ import com.provedcode.talent.model.dto.FullProofDTO;
 import com.provedcode.talent.model.dto.ProofDTO;
 import com.provedcode.talent.service.TalentProofService;
 import com.provedcode.user.model.dto.SessionInfoDTO;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -29,20 +30,11 @@ public class TalentProofController {
         return talentProofService.getAllProofsPage(page, size, orderBy).map(talentProofMapper::toProofDTO);
     }
 
+    @GetMapping("/proofs/{proof-id}")
     @PreAuthorize("hasRole('TALENT')")
-    @DeleteMapping("/{talent-id}/proofs/{proof-id}")
-    SessionInfoDTO deleteProof(@PathVariable(value = "talent-id") long talentId,
-                               @PathVariable(value = "proof-id") long proofId,
-                               Authentication authentication) {
-        return talentProofService.deleteProofById(talentId, proofId, authentication);
-    }
-
-    @PreAuthorize("hasRole('TALENT')")
-    @PostMapping("/{talent-id}/proofs")
-    ResponseEntity<?> addProof(@PathVariable(value = "talent-id") long talentId,
-                               @RequestBody AddProofDTO addProofDTO,
-                               Authentication authentication) {
-        return talentProofService.addProof(addProofDTO, talentId, authentication);
+    ProofDTO getTalentProof(@PathVariable(value = "proof-id") long proofId,
+                            Authentication authentication) {
+        return talentProofMapper.toProofDTO(talentProofService.getTalentProof(proofId, authentication));
     }
 
     @GetMapping("/{talent-id}/proofs")
@@ -51,15 +43,34 @@ public class TalentProofController {
                                                 @PathVariable("talent-id") Long talentId,
                                                 @RequestParam(value = "page") Optional<Integer> page,
                                                 @RequestParam(value = "size") Optional<Integer> size,
-                                                @RequestParam(value = "direction") Optional<String> direction,
-                                                @RequestParam(value = "sort", defaultValue = "created") String... sort) {
-        return talentProofService.getTalentProofs(talentId, page, size, direction, authentication, sort);
+                                                @RequestParam(value = "order-by") Optional<String> orderBy,
+                                                @RequestParam(value = "sort-by", defaultValue = "created") String... sortBy) {
+        return talentProofService.getTalentProofs(talentId, page, size, orderBy, authentication, sortBy);
     }
 
+    @PostMapping("/{talent-id}/proofs")
     @PreAuthorize("hasRole('TALENT')")
-    @GetMapping("/proofs/{proof-id}")
-    ProofDTO getTalentProof(@PathVariable(value = "proof-id") long proofId,
-                            Authentication authentication) {
-        return talentProofService.getTalentProof(proofId, authentication);
+    ResponseEntity<?> addProof(@PathVariable(value = "talent-id") long talentId,
+                               @RequestBody AddProofDTO addProofDTO,
+                               Authentication authentication) {
+        return talentProofService.addProof(addProofDTO, talentId, authentication);
+    }
+
+    @PatchMapping("/{talent-id}/proofs/{proof-id}")
+    @PreAuthorize("hasRole('TALENT')")
+    ProofDTO editProof(Authentication authentication,
+                       @PathVariable("talent-id") long talentId,
+                       @PathVariable("proof-id") long proofId,
+                       @RequestBody @Valid ProofDTO proof) {
+        return talentProofMapper.toProofDTO(
+                talentProofService.editTalentProof(talentId, proofId, proof, authentication));
+    }
+
+    @DeleteMapping("/{talent-id}/proofs/{proof-id}")
+    @PreAuthorize("hasRole('TALENT')")
+    SessionInfoDTO deleteProof(@PathVariable(value = "talent-id") long talentId,
+                               @PathVariable(value = "proof-id") long proofId,
+                               Authentication authentication) {
+        return talentProofService.deleteProofById(talentId, proofId, authentication);
     }
 }

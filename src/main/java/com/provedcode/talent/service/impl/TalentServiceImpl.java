@@ -3,12 +3,16 @@ package com.provedcode.talent.service.impl;
 import com.provedcode.config.PageProperties;
 import com.provedcode.talent.model.dto.FullTalentDTO;
 import com.provedcode.talent.model.entity.*;
+import com.provedcode.talent.repo.TalentProofRepository;
 import com.provedcode.talent.repo.TalentRepository;
 import com.provedcode.talent.service.TalentService;
-import com.provedcode.user.model.dto.SessionInfoDTO;
-import com.provedcode.user.model.entity.UserInfo;
-import com.provedcode.user.repo.UserInfoRepository;
 import com.provedcode.talent.utill.ValidateTalentForCompliance;
+import com.provedcode.user.model.Role;
+import com.provedcode.user.model.dto.SessionInfoDTO;
+import com.provedcode.user.model.entity.Authority;
+import com.provedcode.user.model.entity.UserInfo;
+import com.provedcode.user.repo.AuthorityRepository;
+import com.provedcode.user.repo.UserInfoRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,6 +32,8 @@ import static org.springframework.http.HttpStatus.*;
 @AllArgsConstructor
 @Transactional
 public class TalentServiceImpl implements TalentService {
+    AuthorityRepository authorityRepository;
+    TalentProofRepository talentProofRepository;
     TalentRepository talentRepository;
     UserInfoRepository userInfoRepository;
     PageProperties pageProperties;
@@ -44,7 +50,7 @@ public class TalentServiceImpl implements TalentService {
             throw new ResponseStatusException(BAD_REQUEST, "'size' query parameter must be greater than or equal to 1");
         }
         return talentRepository.findAll(PageRequest.of(page.orElse(pageProperties.defaultPageNum()),
-                size.orElse(pageProperties.defaultPageSize())));
+                                                       size.orElse(pageProperties.defaultPageSize())));
 
     }
 
@@ -80,64 +86,62 @@ public class TalentServiceImpl implements TalentService {
                     .setBio(fullTalent.bio());
         } else {
             oldTalentDescription = TalentDescription.builder()
-                    .talentId(oldTalentId)
-                    .additionalInfo(fullTalent.additionalInfo())
-                    .bio(fullTalent.bio())
-                    .talent(oldTalent)
-                    .build();
+                                                    .talentId(oldTalentId)
+                                                    .additionalInfo(fullTalent.additionalInfo())
+                                                    .bio(fullTalent.bio())
+                                                    .talent(oldTalent)
+                                                    .build();
         }
 
         oldTalentTalents.clear();
         if (fullTalent.talents() != null) {
             oldTalentTalents.addAll(fullTalent.talents().stream().map(s -> TalentTalents.builder()
-                    .talentId(oldTalentId)
-                    .talent(oldTalent)
-                    .talentName(s)
-                    .build()).toList());
+                                                                                        .talentId(oldTalentId)
+                                                                                        .talent(oldTalent)
+                                                                                        .talentName(s)
+                                                                                        .build()).toList());
         }
 
         oldTalentLinks.clear();
         if (fullTalent.links() != null) {
             oldTalentLinks.addAll(fullTalent.links().stream().map(l -> TalentLink.builder()
-                    .talentId(oldTalentId)
-                    .talent(oldTalent)
-                    .link(l)
-                    .build()).toList());
+                                                                                 .talentId(oldTalentId)
+                                                                                 .talent(oldTalent)
+                                                                                 .link(l)
+                                                                                 .build()).toList());
         }
 
         oldTalentContacts.clear();
         if (fullTalent.contacts() != null) {
             oldTalentContacts.addAll(fullTalent.contacts().stream().map(s -> TalentContact.builder()
-                    .talentId(oldTalentId)
-                    .talent(oldTalent)
-                    .contact(s)
-                    .build()).toList());
+                                                                                          .talentId(oldTalentId)
+                                                                                          .talent(oldTalent)
+                                                                                          .contact(s)
+                                                                                          .build()).toList());
         }
 
         oldTalentAttachedFile.clear();
         if (fullTalent.attachedFiles() != null) {
             oldTalentAttachedFile.addAll(fullTalent.attachedFiles().stream().map(s -> TalentAttachedFile.builder()
-                            .talentId(
-                                    oldTalentId)
-                            .talent(oldTalent)
-                            .attachedFile(s)
-                            .build())
-                    .toList());
+                                                                                                        .talentId(
+                                                                                                                oldTalentId)
+                                                                                                        .talent(oldTalent)
+                                                                                                        .attachedFile(s)
+                                                                                                        .build())
+                                                   .toList());
         }
 
         oldTalent.setFirstName(fullTalent.firstName())
-                .setLastName(fullTalent.lastName())
-                .setSpecialization(fullTalent.specialization())
-                .setImage(fullTalent.image())
-                .setTalentDescription(oldTalentDescription)
-                .setTalentTalents(oldTalentTalents)
-                .setTalentLinks(oldTalentLinks)
-                .setTalentContacts(oldTalentContacts)
-                .setTalentAttachedFiles(oldTalentAttachedFile);
+                 .setLastName(fullTalent.lastName())
+                 .setSpecialization(fullTalent.specialization())
+                 .setImage(fullTalent.image())
+                 .setTalentDescription(oldTalentDescription)
+                 .setTalentTalents(oldTalentTalents)
+                 .setTalentLinks(oldTalentLinks)
+                 .setTalentContacts(oldTalentContacts)
+                 .setTalentAttachedFiles(oldTalentAttachedFile);
 
-        Talent newTalent = talentRepository.save(oldTalent);
-
-        return newTalent;
+        return talentRepository.save(oldTalent);
     }
 
     @Override
@@ -147,8 +151,13 @@ public class TalentServiceImpl implements TalentService {
 
         validateTalentForCompliance.userVerification(talent, userInfo, id);
 
-        userInfoRepository.delete(userInfo.orElseThrow(() -> new ResponseStatusException(NOT_IMPLEMENTED)));
-        talentRepository.delete(talent.orElseThrow(() -> new ResponseStatusException(NOT_IMPLEMENTED)));
+        UserInfo user = userInfo.orElseThrow(() -> new ResponseStatusException(NOT_IMPLEMENTED));
+        Talent entity = talent.orElseThrow(() -> new ResponseStatusException(NOT_IMPLEMENTED));
+
+        user.getAuthorities().clear();
+        userInfoRepository.delete(user);
+        talentRepository.delete(entity);
+
         return new SessionInfoDTO("deleted", "null");
     }
 }
