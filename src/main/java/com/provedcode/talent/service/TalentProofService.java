@@ -105,7 +105,7 @@ public class TalentProofService {
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{id}")
+                .replacePath("/api/talents/proofs/{id}")
                 .buildAndExpand(talentProof.getId())
                 .toUri();
 
@@ -169,18 +169,15 @@ public class TalentProofService {
                 .build();
     }
 
-    public ProofDTO getTalentProof(long talentId, long proofId, Authentication authentication) {
+    public ProofDTO getTalentProof(long proofId, Authentication authentication) {
         Optional<TalentProof> talentProof = talentProofRepository.findById(proofId);
-        if (talentProof.isPresent()) {
-            if (talentProof.get().getTalentId() != talentId) {
-                throw new ResponseStatusException(BAD_REQUEST,
-                        String.format("proof with id = %d not equal to talent id = %d", proofId, talentId));
-            }
-        } else {
-            throw new ResponseStatusException(NOT_FOUND, String.format("proof with id = %d not found", proofId));
-        }
         Optional<UserInfo> userInfo = userInfoRepository.findByLogin(authentication.getName());
-        if (userInfo.get().getTalentId() == talentId ||
+
+        if (talentProof.isEmpty()) {
+            throw new ResponseStatusException(NOT_FOUND);
+        }
+
+        if (talentProof.get().getTalentId() == userInfo.get().getTalentId() ||
                 talentProof.get().getStatus().equals(ProofStatus.PUBLISHED)) {
             return ProofDTO.builder()
                     .id(talentProof.get().getTalentId())
