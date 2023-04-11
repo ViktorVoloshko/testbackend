@@ -44,7 +44,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'HIDDEN', '2021-06-08 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'SerhiiSoloviov', 'password');
+values ((select id from talent order by id desc limit 1), 'SerhiiSoloviov@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -87,7 +87,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2022-09-02 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'MykhailoOrdyntsev', 'password');
+values ((select id from talent order by id desc limit 1), 'MykhailoOrdyntsev@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -128,7 +128,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2023-04-04 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'DenisBoyko', 'password');
+values ((select id from talent order by id desc limit 1), 'DenisBoyko@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -168,7 +168,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2023-05-04 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'DmytroUzun', 'password');
+values ((select id from talent order by id desc limit 1), 'DmytroUzun@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -210,7 +210,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2023-09-05 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'DmytroUzun', 'password');
+values ((select id from talent order by id desc limit 1), 'DmytroUzun@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -250,7 +250,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2023-08-06 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'ViktorVoloshko', 'password');
+values ((select id from talent order by id desc limit 1), 'ViktorVoloshko@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -292,7 +292,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2021-01-09 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'OlhaMoiseienko', 'password');
+values ((select id from talent order by id desc limit 1), 'OlhaMoiseienko@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -332,7 +332,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'PUBLISHED', '2023-02-09 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'MaximKiyashko', 'password');
+values ((select id from talent order by id desc limit 1), 'MaximKiyashko@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -374,7 +374,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'HIDDEN', '2023-06-04 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'NikolaievOleksiio', 'password');
+values ((select id from talent order by id desc limit 1), 'NikolaievOleksiio@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -414,7 +414,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'HIDDEN', '2023-06-04 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'ArtemLytvynenko', 'password');
+values ((select id from talent order by id desc limit 1), 'ArtemLytvynenko@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -454,7 +454,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2023-06-04 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'DaniilYevtukhov', 'password');
+values ((select id from talent order by id desc limit 1), 'DaniilYevtukhov@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -496,7 +496,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2023-06-04 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'RuslanMorozov', 'password');
+values ((select id from talent order by id desc limit 1), 'RuslanMorozov@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
@@ -538,7 +538,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'http://third_link', 'text to third proof', 'DRAFT', '2023-06-04 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), 'IhorKopieichykov', 'password');
+values ((select id from talent order by id desc limit 1), 'IhorKopieichykov@gmail.com', 'password');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
         (select authority.id from authority where id = 1));
