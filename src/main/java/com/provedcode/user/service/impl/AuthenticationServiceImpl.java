@@ -43,24 +43,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Transactional
     public UserInfoDTO login(String name, Collection<? extends GrantedAuthority> authorities) {
-        Optional<Long> id = userInfoRepository.findByLogin(name).map(userInfo -> userInfo.getTalentId());
-        if (id.isEmpty()) {
-            throw new ResponseStatusException(NOT_FOUND, String.format("talent with id = %d not found", id));
-        }
+        UserInfo userInfo = userInfoRepository.findByLogin(name)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format("talent with name = %s not found", name)));
 
-        Optional<UserInfo> userInfo = userInfoRepository.findByLogin(name);
-        if (userInfo.isEmpty()) {
-            throw new ResponseStatusException(NOT_FOUND, String.format("talent with name = %s not found", name));
-        }
-        Optional<Talent> talent = talentEntityRepository.findById(userInfo.get().getTalentId());
+        Talent talent = talentEntityRepository.findById(userInfo.getTalentId())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, String.format("talent with name = %s not found", name)));
 
         return UserInfoDTO.builder()
                 .token(generateJWTToken(name, authorities))
-                .id(talent.get().getId())
-                .login(userInfo.get().getLogin())
-                .firstName(talent.get().getFirstName())
-                .lastName(talent.get().getLastName())
-                .image(talent.get().getImage())
+                .id(talent.getId())
+                .login(userInfo.getLogin())
+                .firstName(talent.getFirstName())
+                .lastName(talent.getLastName())
+                .image(talent.getImage())
                 .build();
     }
 
