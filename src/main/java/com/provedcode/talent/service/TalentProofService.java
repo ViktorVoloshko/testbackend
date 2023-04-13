@@ -5,6 +5,7 @@ import com.provedcode.talent.model.ProofStatus;
 import com.provedcode.talent.model.dto.AddProofDTO;
 import com.provedcode.talent.model.dto.FullProofDTO;
 import com.provedcode.talent.model.dto.ProofDTO;
+import com.provedcode.talent.model.dto.StatusDTO;
 import com.provedcode.talent.model.entity.Talent;
 import com.provedcode.talent.model.entity.TalentProof;
 import com.provedcode.talent.repo.TalentProofRepository;
@@ -206,12 +207,14 @@ public class TalentProofService {
     }
 
     @Transactional
-    public SessionInfoDTO deleteProofById(long talentId, long proofId, Authentication authentication) {
+    public StatusDTO deleteProofById(long talentId, long proofId, Authentication authentication) {
         Optional<Talent> talent = talentRepository.findById(talentId);
         Optional<TalentProof> talentProof = talentProofRepository.findById(proofId);
         Optional<UserInfo> userInfo = userInfoRepository.findByLogin(authentication.getName());
         validateTalentForCompliance.userAndProofVerification(talent, talentProof, userInfo, talentId, proofId);
+
+        log.info("talentproof={}", talentProof.orElseThrow());
         talentProofRepository.delete(talentProof.orElseThrow(() -> new ResponseStatusException(NOT_IMPLEMENTED)));
-        return new SessionInfoDTO("deleted", "null");
+        return new StatusDTO("deleted");
     }
 }

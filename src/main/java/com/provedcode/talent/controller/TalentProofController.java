@@ -4,6 +4,7 @@ import com.provedcode.talent.mapper.TalentProofMapper;
 import com.provedcode.talent.model.dto.AddProofDTO;
 import com.provedcode.talent.model.dto.FullProofDTO;
 import com.provedcode.talent.model.dto.ProofDTO;
+import com.provedcode.talent.model.dto.StatusDTO;
 import com.provedcode.talent.service.TalentProofService;
 import com.provedcode.user.model.dto.SessionInfoDTO;
 import jakarta.validation.Valid;
@@ -68,9 +69,9 @@ public class TalentProofController {
 
     @DeleteMapping("/{talent-id}/proofs/{proof-id}")
     @PreAuthorize("hasRole('TALENT')")
-    SessionInfoDTO deleteProof(@PathVariable(value = "talent-id") long talentId,
-                               @PathVariable(value = "proof-id") long proofId,
-                               Authentication authentication) {
+    StatusDTO deleteProof(@PathVariable(value = "talent-id") long talentId,
+                          @PathVariable(value = "proof-id") long proofId,
+                          Authentication authentication) {
         return talentProofService.deleteProofById(talentId, proofId, authentication);
     }
 }
