@@ -99,7 +99,7 @@ public class TalentProofService {
                                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                                                                        "Talent with id = %s not found".formatted(
                                                                                                talentId)));
-        UserInfo userInfo = userInfoRepository.findByLogin(authentication.getName())
+        UserInfo userInfo = userInfoRepository.findById(talentId)
                                               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                                                                              "Talent with id = %s not found".formatted(
                                                                                                      talentId)));
@@ -176,6 +176,7 @@ public class TalentProofService {
         return ResponseEntity.created(location).build();
     }
 
+    @Transactional
     public TalentProof editTalentProof(long talentId, long proofId, ProofDTO proof, Authentication authentication) {
         Optional<Talent> talent = talentRepository.findById(talentId);
         Optional<UserInfo> userInfo = userInfoRepository.findByLogin(authentication.getName());
@@ -189,8 +190,7 @@ public class TalentProofService {
         if (oldProofStatus != ProofStatus.DRAFT && proof.status() == ProofStatus.DRAFT)
             throw new ResponseStatusException(FORBIDDEN, "you cannot change proofs status to DRAFT");
         if (oldProofStatus == ProofStatus.DRAFT && proof.status() == ProofStatus.HIDDEN)
-            throw new ResponseStatusException(FORBIDDEN,
-                                              "you cannot change proofs status from DRAFT to HIDDEN, it should be PUBLISHED");
+            throw new ResponseStatusException(FORBIDDEN, "you cannot change proofs status from DRAFT to HIDDEN, it should be PUBLISHED");
 
         if (proof.link() == null && proof.text() == null) {
             oldProof.setStatus(proof.status());
@@ -205,6 +205,7 @@ public class TalentProofService {
         return talentProofRepository.save(oldProof);
     }
 
+    @Transactional
     public SessionInfoDTO deleteProofById(long talentId, long proofId, Authentication authentication) {
         Optional<Talent> talent = talentRepository.findById(talentId);
         Optional<TalentProof> talentProof = talentProofRepository.findById(proofId);
