@@ -22,7 +22,7 @@ public class InitConfig implements CommandLineRunner {
         userInfoRepository.saveAll(
                 userInfoRepository.findAll().stream()
                                   .map(i -> {
-                                      i.setPassword(passwordEncoder.encode("password"));
+                                      i.setPassword(passwordEncoder.encode(i.getPassword()));
                                       return i;
                                   }).toList());
     }

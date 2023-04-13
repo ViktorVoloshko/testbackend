@@ -1,9 +1,13 @@
+
+drop table if exists authority cascade ;
 create table authority
 (
     id        bigserial   not null,
     authority varchar(20) not null,
     primary key (id)
 );
+
+drop table if exists talent cascade ;
 create table talent
 (
     id             bigserial not null,
@@ -13,6 +17,8 @@ create table talent
     specialization varchar(30),
     primary key (id)
 );
+
+drop table if exists talent_attached_file cascade ;
 create table talent_attached_file
 (
     id            bigserial not null,
@@ -20,6 +26,8 @@ create table talent_attached_file
     talent_id     bigint    not null,
     primary key (id)
 );
+
+drop table if exists talent_contact cascade ;
 create table talent_contact
 (
     id        bigserial not null,
@@ -27,6 +35,8 @@ create table talent_contact
     talent_id bigint    not null,
     primary key (id)
 );
+
+drop table if exists talent_description cascade ;
 create table talent_description
 (
     id            bigserial not null,
@@ -35,6 +45,8 @@ create table talent_description
     talent_id     bigint    not null,
     primary key (id)
 );
+
+drop table if exists talent_link cascade ;
 create table talent_link
 (
     id        bigserial not null,
@@ -42,6 +54,8 @@ create table talent_link
     talent_id bigint    not null,
     primary key (id)
 );
+
+drop table if exists talent_proofs cascade ;
 create table talent_proofs
 (
     id        bigserial   not null,
@@ -52,6 +66,8 @@ create table talent_proofs
     text      varchar(255),
     primary key (id)
 );
+
+drop table if exists talent_talents cascade ;
 create table talent_talents
 (
     id          bigserial not null,
@@ -59,12 +75,16 @@ create table talent_talents
     talent_name varchar(255),
     primary key (id)
 );
+
+drop table if exists user_authorities cascade ;
 create table user_authorities
 (
     user_id      bigint not null,
     authority_id bigint not null,
     primary key (user_id, authority_id)
 );
+
+drop table if exists user_info cascade ;
 create table user_info
 (
     id        bigserial    not null,
@@ -73,6 +93,7 @@ create table user_info
     talent_id bigint       not null,
     primary key (id)
 );
+
 alter table if exists talent_attached_file
     add constraint FKdtjomr27q99ufe065trf8jr7b foreign key (talent_id) references talent;
 alter table if exists talent_contact
