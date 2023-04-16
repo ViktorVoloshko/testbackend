@@ -1,4 +1,4 @@
-package com.provedcode.talent.model.dto;
+package com.provedcode.talent.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.provedcode.annotations.UrlList;
@@ -8,16 +8,12 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record FullTalentDTO(
-        Long id,
-        @NotEmpty
+public record EditTalent(
         @JsonProperty("first_name")
         String firstName,
-        @NotEmpty
         @JsonProperty("last_name")
         String lastName,
         String image,
-        @NotEmpty
         String specialization,
         @JsonProperty("additional_info")
         String additionalInfo,
