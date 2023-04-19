@@ -53,7 +53,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                           .build();
     }
 
-    @Transactional(readOnly = true)
     public UserInfoDTO register(RegistrationDTO user) {
         if (userInfoRepository.existsByLogin(user.login())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
