@@ -1,5 +1,6 @@
 package com.provedcode.talent.model.entity;
 
+import com.provedcode.kudos.model.entity.Kudos;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -36,14 +37,16 @@ public class Talent {
     private String image;
     @OneToOne(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private TalentDescription talentDescription;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TalentLink> talentLinks = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TalentTalents> talentTalents = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TalentContact> talentContacts = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TalentAttachedFile> talentAttachedFiles = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TalentProof> talentProofs = new ArrayList<>();
+    @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Kudos> cudoses = new ArrayList<>();
 }

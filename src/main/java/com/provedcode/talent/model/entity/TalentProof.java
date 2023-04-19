@@ -1,5 +1,6 @@
 package com.provedcode.talent.model.entity;
 
+import com.provedcode.kudos.model.entity.Kudos;
 import com.provedcode.talent.model.ProofStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,6 +10,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Accessors(chain = true)
 @NoArgsConstructor
@@ -24,8 +26,9 @@ public class TalentProof {
     @Column(name = "id", nullable = false)
     private Long id;
     @NotNull
-    @Column(name = "talent_id", nullable = false)
-    private Long talentId;
+    @ManyToOne
+    @JoinColumn(name = "talent_id", updatable = false)
+    private Talent talent;
     @NotEmpty
     @URL
     @Column(name = "link", length = 100)
@@ -36,8 +39,6 @@ public class TalentProof {
     @Column(length = 20)
     private ProofStatus status;
     private LocalDateTime created;
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "talent_id", insertable = false, updatable = false)
-    private Talent talent;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "proof", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Kudos> kudos;
 }
