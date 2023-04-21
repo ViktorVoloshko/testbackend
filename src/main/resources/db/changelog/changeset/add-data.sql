@@ -3,6 +3,7 @@
 
 insert into authority (id, authority)
 values (1, 'TALENT');
+values (2, 'SPONSOR');
 -- -- FOR USER AUTHORITY
 -- -- SELECT USER_INFO.ID , LOGIN , PASSWORD, talent_id , AUTHORITY FROM
 -- --     USER_INFO

@@ -33,7 +33,7 @@ public class Talent {
     @Column(name = "specialization", length = 30)
     private String specialization;
     @URL
-    @Column(name = "image", length = 100)
+    @Column(name = "image", length = 300)
     private String image;
     @OneToOne(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private TalentDescription talentDescription;
@@ -47,6 +47,4 @@ public class Talent {
     private List<TalentAttachedFile> talentAttachedFiles = new ArrayList<>();
     @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TalentProof> talentProofs = new ArrayList<>();
-    @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Kudos> cudoses = new ArrayList<>();
 }

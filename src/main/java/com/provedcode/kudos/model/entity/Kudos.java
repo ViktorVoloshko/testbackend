@@ -1,11 +1,9 @@
 package com.provedcode.kudos.model.entity;
 
-import com.provedcode.talent.model.entity.Talent;
+import com.provedcode.sponsor.model.entity.Sponsor;
 import com.provedcode.talent.model.entity.TalentProof;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -20,9 +18,9 @@ public class Kudos {
     @Column(name = "id", nullable = false)
     private Long id;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "talent_id")
-    private Talent talent;
-    @ManyToOne
+    @JoinColumn(name = "sponsor_id")
+    private Sponsor sponsor;
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "proof_id")
     private TalentProof proof;
 }

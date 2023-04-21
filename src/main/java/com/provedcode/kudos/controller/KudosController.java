@@ -11,22 +11,22 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RequestMapping("/api/v3/talent")
 public class KudosController {
-    KudosService kudosService;
-
-    @GetMapping("/proofs/{proof-id}/kudos")
-    KudosAmount getKudosProof(@PathVariable("proof-id") long id) {
-        return kudosService.getAmountKudosProof(id);
-    }
-
-    @PreAuthorize("hasRole('TALENT')")
-    @PostMapping("/proofs/{proof-id}/kudos")
-    void addKudosToProof(@PathVariable("proof-id") long id, Authentication authentication) {
-        kudosService.addKudosToProof(id, authentication);
-    }
-
-    @PreAuthorize("hasRole('TALENT')")
-    @DeleteMapping("/proofs/{proof-id}/kudos")
-    void deleteKudosFromProof(@PathVariable("proof-id") long id, Authentication authentication) {
-        kudosService.deleteKudosFromProof(id, authentication);
-    }
+//    KudosService kudosService;
+//
+//    @GetMapping("/proofs/{proof-id}/kudos")
+//    KudosAmount getKudosProof(@PathVariable("proof-id") long id) {
+//        return kudosService.getAmountKudosProof(id);
+//    }
+//
+//    @PreAuthorize("hasRole('TALENT')")
+//    @PostMapping("/proofs/{proof-id}/kudos")
+//    void addKudosToProof(@PathVariable("proof-id") long id, Authentication authentication) {
+//        kudosService.addKudosToProof(id, authentication);
+//    }
+//
+//    @PreAuthorize("hasRole('TALENT')")
+//    @DeleteMapping("/proofs/{proof-id}/kudos")
+//    void deleteKudosFromProof(@PathVariable("proof-id") long id, Authentication authentication) {
+//        kudosService.deleteKudosFromProof(id, authentication);
+//    }
 }
