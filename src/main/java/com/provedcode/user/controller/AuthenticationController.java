@@ -1,6 +1,7 @@
 package com.provedcode.user.controller;
 
-import com.provedcode.user.model.dto.RegistrationDTO;
+import com.provedcode.user.model.dto.SponsorRegistrationDTO;
+import com.provedcode.user.model.dto.TalentRegistrationDTO;
 import com.provedcode.user.model.dto.UserInfoDTO;
 import com.provedcode.user.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/api/v2/talents")
+@RequestMapping("/api")
 public class AuthenticationController {
     AuthenticationService authenticationService;
 
@@ -41,7 +42,7 @@ public class AuthenticationController {
                     description = "UNAUTHORIZED",
                     content = @Content)
     })
-    @PostMapping("/login")
+    @PostMapping("/v2/login")
     UserInfoDTO login(Authentication authentication) {
         return authenticationService.login(authentication.getName(), authentication.getAuthorities());
     }
@@ -60,9 +61,15 @@ public class AuthenticationController {
                     description = "BAD_REQUEST",
                     content = @Content),
     })
-    @PostMapping("/register")
+    @PostMapping("/v2/talents/register")
     @ResponseStatus(HttpStatus.CREATED)
-    UserInfoDTO register(@RequestBody @Valid RegistrationDTO user) {
+    UserInfoDTO register(@RequestBody @Valid TalentRegistrationDTO user) {
+        return authenticationService.register(user);
+    }
+
+    @PostMapping("/v3/sponsors/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    UserInfoDTO register(@RequestBody @Valid SponsorRegistrationDTO user) {
         return authenticationService.register(user);
     }
 }

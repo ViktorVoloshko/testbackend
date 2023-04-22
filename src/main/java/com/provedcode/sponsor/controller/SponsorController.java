@@ -20,7 +20,7 @@ public class SponsorController {
     SponsorService sponsorService;
     SponsorMapper sponsorMapper;
 
-    @GetMapping("/sponsor")
+    @GetMapping("/sponsors")
     @ResponseStatus(HttpStatus.OK)
     Page<SponsorDTO> getSponsors(@RequestParam(value = "page") Optional<Integer> page,
                                  @RequestParam(value = "size") Optional<Integer> size) {
@@ -28,8 +28,8 @@ public class SponsorController {
     }
 
     @PreAuthorize("hasRole('SPONSOR')")
-    @GetMapping("/sponsor/{id}")
+    @GetMapping("/sponsors/{id}")
     SponsorDTO getSponsor(@PathVariable("id") long id, Authentication authentication) {
-        return sponsorMapper.toDto(sponsorService.getSponsorById(id));
+        return sponsorMapper.toDto(sponsorService.getSponsorById(id, authentication));
     }
 }
