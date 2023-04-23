@@ -2,6 +2,7 @@ package com.provedcode.sponsor.controller;
 
 import com.provedcode.sponsor.mapper.SponsorMapper;
 import com.provedcode.sponsor.model.dto.SponsorDTO;
+import com.provedcode.sponsor.model.dto.SponsorEditDTO;
 import com.provedcode.sponsor.service.SponsorService;
 import com.provedcode.talent.model.dto.FullTalentDTO;
 import lombok.AllArgsConstructor;
@@ -32,4 +33,19 @@ public class SponsorController {
     SponsorDTO getSponsor(@PathVariable("id") long id, Authentication authentication) {
         return sponsorMapper.toDto(sponsorService.getSponsorById(id, authentication));
     }
+
+    @PreAuthorize("hasRole('SPONSOR')")
+    @PatchMapping("/sponsors/{id}")
+    SponsorDTO editSponsor(@PathVariable("id") long id,
+                           @RequestBody SponsorEditDTO sponsorEditDTO,
+                           Authentication authentication) {
+        return sponsorMapper.toDto(sponsorService.editSponsorById(id, sponsorEditDTO, authentication));
+    }
+
+    @PreAuthorize("hasRole('SPONSOR')")
+    @DeleteMapping("/sponsors/{id}")
+    void deleteSponsor(@PathVariable("id") long id, Authentication authentication) {
+        sponsorService.deleteSponsor(id, authentication);
+    }
+
 }
