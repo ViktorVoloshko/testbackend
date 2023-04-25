@@ -22,8 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
@@ -71,7 +69,7 @@ public class KudosService {
         Sponsor sponsor = sponsorRepository.findById(userInfo.getSponsor().getId()).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND,
                         String.format("Sponsor with id = %d not found", id)));
-        if (sponsor.getId() != userInfo.getSponsor().getId()) {
+        if (!sponsor.getId().equals(userInfo.getSponsor().getId())) {
             throw new ResponseStatusException(FORBIDDEN, "Only the account owner can view the number of kudos");
         }
         return new KudosAmount(sponsor.getAmountKudos());
@@ -89,7 +87,11 @@ public class KudosService {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
                         "Proof with id = %s not found".formatted(id)));
 
-        if (Objects.equals(talent.getId(), talentProof.getTalent().getId())) {
+        Long countOfAllKudos = talentProof.getKudos().stream()
+                .map(Kudos::getAmountKudos)
+                .reduce(0L, (prev, next) -> prev + next);
+
+        if (talent.getId().equals(talentProof.getTalent().getId())) {
             Map<Long, SponsorDTO> kudosFromSponsor = talentProof.getKudos().stream()
                     .collect(Collectors.toMap(
                             Kudos::getAmountKudos,
@@ -97,17 +99,14 @@ public class KudosService {
                             (prev, next) -> next,
                             HashMap::new
                     ));
-            Long counter = talentProof.getKudos().stream().map(Kudos::getAmountKudos)
-                    .mapToLong(Long::intValue).sum();
+
             return KudosAmountWithSponsor.builder()
-                    .allKudosOnProof(counter)
+                    .allKudosOnProof(countOfAllKudos)
                     .kudosFromSponsor(kudosFromSponsor)
                     .build();
         } else {
-            Long counter = talentProof.getKudos().stream().map(Kudos::getAmountKudos)
-                    .mapToLong(Long::intValue).sum();
             return KudosAmountWithSponsor.builder()
-                    .allKudosOnProof(counter)
+                    .allKudosOnProof(countOfAllKudos)
                     .kudosFromSponsor(null).build();
         }
     }
