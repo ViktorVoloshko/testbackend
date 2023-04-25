@@ -8,6 +8,6 @@ import java.util.Map;
 @Builder
 public record KudosAmountWithSponsor(
         Long allKudosOnProof,
-        Map<SponsorDTO, Long> kudosFromSponsor
+        Map<Long, SponsorDTO> kudosFromSponsor
 ) {
 }

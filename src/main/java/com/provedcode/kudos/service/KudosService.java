@@ -22,6 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
@@ -87,22 +89,22 @@ public class KudosService {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
                         "Proof with id = %s not found".formatted(id)));
 
-        if (talent.getId() == talentProof.getTalent().getId()) {
-            Map<SponsorDTO, Long> kudosFromSponsor = talentProof.getKudos().stream()
+        if (Objects.equals(talent.getId(), talentProof.getTalent().getId())) {
+            Map<Long, SponsorDTO> kudosFromSponsor = talentProof.getKudos().stream()
                     .collect(Collectors.toMap(
-                            sponsor -> sponsorMapper.toDto(sponsor.getSponsor()),
                             Kudos::getAmountKudos,
-                            (sponsor, kudos) -> sponsor,
+                            proof -> proof.getSponsor() != null ? sponsorMapper.toDto(proof.getSponsor()) : SponsorDTO.builder().build(),
+                            (prev, next) -> next,
                             HashMap::new
                     ));
-            Long counter = talentProof.getKudos().stream().map(i -> i.getAmountKudos())
+            Long counter = talentProof.getKudos().stream().map(Kudos::getAmountKudos)
                     .mapToLong(Long::intValue).sum();
             return KudosAmountWithSponsor.builder()
                     .allKudosOnProof(counter)
                     .kudosFromSponsor(kudosFromSponsor)
                     .build();
         } else {
-            Long counter = talentProof.getKudos().stream().map(i -> i.getAmountKudos())
+            Long counter = talentProof.getKudos().stream().map(Kudos::getAmountKudos)
                     .mapToLong(Long::intValue).sum();
             return KudosAmountWithSponsor.builder()
                     .allKudosOnProof(counter)
