@@ -14,8 +14,8 @@ public class KudosController {
     KudosService kudosService;
 
     @GetMapping("/proofs/{proof-id}/kudos")
-    KudosAmount getKudosProof(@PathVariable("proof-id") long id) {
-        return kudosService.getAmountKudosProof(id);
+    KudosAmount getKudosProof(@PathVariable("proof-id") long id, Authentication authentication) {
+        return kudosService.getAmountKudosProof(id, authentication);
     }
 
     @PreAuthorize("hasRole('TALENT')")

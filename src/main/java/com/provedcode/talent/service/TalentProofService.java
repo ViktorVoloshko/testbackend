@@ -29,7 +29,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.*;
@@ -58,7 +57,7 @@ public class TalentProofService {
             throw new ResponseStatusException(BAD_REQUEST, "'size' query parameter must be greater than or equal to 1");
         }
         if (!sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) &&
-            !sortDirection.equalsIgnoreCase(Sort.Direction.DESC.name())) {
+                !sortDirection.equalsIgnoreCase(Sort.Direction.DESC.name())) {
             throw new ResponseStatusException(BAD_REQUEST, "'direction' query param must be equals ASC or DESC");
         }
 
@@ -83,7 +82,7 @@ public class TalentProofService {
                 () -> new ResponseStatusException(NOT_FOUND, "user with this token not found"));
 
         if (talentProof.getTalent().getId().equals(userInfo.getTalent().getId()) ||
-            talentProof.getStatus().equals(ProofStatus.PUBLISHED)) {
+                talentProof.getStatus().equals(ProofStatus.PUBLISHED)) {
             return talentProof;
         } else {
             throw new ResponseStatusException(FORBIDDEN);
@@ -95,13 +94,13 @@ public class TalentProofService {
                                         Optional<String> direction, Authentication authentication,
                                         String... sortProperties) {
         Talent talent = talentRepository.findById(talentId)
-                                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                                                                       "Talent with id = %s not found".formatted(
-                                                                                               talentId)));
-        UserInfo userInfo = userInfoRepository.findById(talentId)
-                                              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                                                                             "Talent with id = %s not found".formatted(
-                                                                                                     talentId)));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Talent with id = %s not found".formatted(
+                                talentId)));
+
+        UserInfo userInfo = userInfoRepository.findByLogin(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
         Page<TalentProof> proofs;
         PageRequest pageRequest;
         String sortDirection = direction.orElseGet(Sort.DEFAULT_DIRECTION::name);
@@ -113,7 +112,7 @@ public class TalentProofService {
             throw new ResponseStatusException(BAD_REQUEST, "'size' query parameter must be greater than or equal to 1");
         }
         if (!sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) &&
-            !sortDirection.equalsIgnoreCase(Sort.Direction.DESC.name())) {
+                !sortDirection.equalsIgnoreCase(Sort.Direction.DESC.name())) {
             throw new ResponseStatusException(BAD_REQUEST, "'direction' query param must be equals ASC or DESC");
         }
 
@@ -124,29 +123,34 @@ public class TalentProofService {
                     Sort.Direction.valueOf(sortDirection.toUpperCase()),
                     sortProperties
             );
-            if (!userInfo.getLogin().equals(authentication.getName())) {
+            if (!userInfo.getTalent().getId().equals(talentId)) {
                 proofs = talentProofRepository.findByTalentIdAndStatus(talentId, ProofStatus.PUBLISHED, pageRequest);
             } else {
                 proofs = talentProofRepository.findByTalentId(talentId, pageRequest);
             }
+//            if (!userInfo.getLogin().equals(authentication.getName())) {
+//                proofs = talentProofRepository.findByTalentIdAndStatus(talentId, ProofStatus.PUBLISHED, pageRequest);
+//            } else {
+//                proofs = talentProofRepository.findByTalentId(talentId, pageRequest);
+//            }
         } catch (RuntimeException exception) {
             throw new ResponseStatusException(BAD_REQUEST, exception.getMessage());
         }
 
         return FullProofDTO.builder()
-                           .id(talent.getId())
-                           .image(talent.getImage())
-                           .firstName(talent.getFirstName())
-                           .lastName(talent.getLastName())
-                           .specialization(talent.getSpecialization())
-                           .proofs(proofs.map(i -> ProofDTO.builder()
-                                                           .id(i.getId())
-                                                           .created(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
-                                                                                     .format(i.getCreated()))
-                                                           .link(i.getLink())
-                                                           .text(i.getText())
-                                                           .status(i.getStatus()).build()))
-                           .build();
+                .id(talent.getId())
+                .image(talent.getImage())
+                .firstName(talent.getFirstName())
+                .lastName(talent.getLastName())
+                .specialization(talent.getSpecialization())
+                .proofs(proofs.map(i -> ProofDTO.builder()
+                        .id(i.getId())
+                        .created(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+                                .format(i.getCreated()))
+                        .link(i.getLink())
+                        .text(i.getText())
+                        .status(i.getStatus()).build()))
+                .build();
     }
 
     public ResponseEntity<?> addProof(AddProof addProof, long talentId, Authentication authentication) {
@@ -156,12 +160,12 @@ public class TalentProofService {
         validateTalentForCompliance.userVerification(talent, userInfo, talentId);
 
         TalentProof talentProof = TalentProof.builder()
-                                             .talent(talent.get())
-                                             .link(addProof.link())
-                                             .text(addProof.text())
-                                             .status(ProofStatus.DRAFT)
-                                             .created(LocalDateTime.now())
-                                             .build();
+                .talent(talent.get())
+                .link(addProof.link())
+                .text(addProof.text())
+                .status(ProofStatus.DRAFT)
+                .created(LocalDateTime.now())
+                .build();
 
         talentProofRepository.save(talentProof);
 
@@ -188,14 +192,11 @@ public class TalentProofService {
             throw new ResponseStatusException(FORBIDDEN, "you cannot change proofs status to DRAFT");
         if (oldProofStatus == ProofStatus.DRAFT && proof.status() == ProofStatus.HIDDEN)
             throw new ResponseStatusException(FORBIDDEN,
-                                              "you cannot change proofs status from DRAFT to HIDDEN, it should be PUBLISHED");
+                    "you cannot change proofs status from DRAFT to HIDDEN, it should be PUBLISHED");
 
         if (proof.link() == null && proof.text() == null) {
             oldProof.setStatus(proof.status());
         } else {
-            if (oldProofStatus != ProofStatus.DRAFT)
-                throw new ResponseStatusException(FORBIDDEN, "you cannot edit proofs without DRAFT status");
-
             oldProof.setLink(proof.link() != null ? proof.link() : oldProof.getLink())
                     .setText(proof.text() != null ? proof.text() : oldProof.getText())
                     .setStatus(proof.status());
