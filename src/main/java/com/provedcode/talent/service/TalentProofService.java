@@ -29,7 +29,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.*;
@@ -193,9 +192,6 @@ public class TalentProofService {
         if (proof.link() == null && proof.text() == null) {
             oldProof.setStatus(proof.status());
         } else {
-            if (oldProofStatus != ProofStatus.DRAFT)
-                throw new ResponseStatusException(FORBIDDEN, "you cannot edit proofs without DRAFT status");
-
             oldProof.setLink(proof.link() != null ? proof.link() : oldProof.getLink())
                     .setText(proof.text() != null ? proof.text() : oldProof.getText())
                     .setStatus(proof.status());
