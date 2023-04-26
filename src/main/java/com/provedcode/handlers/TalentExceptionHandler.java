@@ -5,14 +5,19 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ControllerAdvice
 public class TalentExceptionHandler {
@@ -64,41 +69,39 @@ public class TalentExceptionHandler {
         return false;
     }
 
-    @ExceptionHandler({ Exception.class })
-    public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
-        ApiError apiError = new ApiError(
-                HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
-        return new ResponseEntity<Object>(
-                apiError, new HttpHeaders(), apiError.getStatus());
-    }
+//    @ExceptionHandler({ Exception.class })
+//    public ResponseEntity<?> handleAll(Exception ex, WebRequest request) {
+//        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
+//        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+//    }
 
 //MethodArgumentNotValidException – This exception is thrown
 // when an argument annotated with @Valid failed validation:
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
 //    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public Map<String, String> handleValidationExceptions(
-//            MethodArgumentNotValidException ex) {
+//    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
 //        Map<String, String> errors = new HashMap<>();
-//        ex.getBindingResult().getAllErrors().forEach((error) -> {
-//            String fieldName = ((FieldError) error).getField();
-//            String errorMessage = error.getDefaultMessage();
-//            errors.put(fieldName, errorMessage);
-//        });
+//        ex.getBindingResult().getAllErrors().forEach(
+//                (error) -> {
+//                    String fieldName = ((FieldError) error).getField();
+//                    String errorMessage = error.getDefaultMessage();
+//                    errors.put(fieldName, errorMessage);
+//                });
 //        return errors;
 //    }
 
-    @ExceptionHandler({ ConstraintViolationException.class })
-    public ResponseEntity<Object> handleConstraintViolation(
-            ConstraintViolationException ex, WebRequest request) {
-        List<String> errors = new ArrayList<>();
-        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            errors.add(violation.getRootBeanClass().getName() + " " +
-                    violation.getPropertyPath() + ": " + violation.getMessage());
-        }
-
-        ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
-        return new ResponseEntity<Object>(
-                apiError, new HttpHeaders(), apiError.getStatus());
-    }
+//    @ExceptionHandler({ ConstraintViolationException.class })
+//    public ResponseEntity<Object> handleConstraintViolation(
+//            ConstraintViolationException ex, WebRequest request) {
+//        List<String> errors = new ArrayList<>();
+//        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+//            errors.add(violation.getRootBeanClass().getName() + " " +
+//                    violation.getPropertyPath() + ": " + violation.getMessage());
+//        }
+//
+//        ApiError apiError =
+//                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+//        return new ResponseEntity<Object>(
+//                apiError, new HttpHeaders(), apiError.getStatus());
+//    }
 }
