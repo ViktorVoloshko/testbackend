@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -26,5 +27,12 @@ public class AWSS3BucketController {
     @GetMapping("/files")
     List<String> getAllFiles() {
         return fileService.listAllFiles();
+    }
+
+    @PreAuthorize("hasRole('TALENT')")
+    @PostMapping("/aws/test")
+    String testTypeOfFile(@RequestParam("file") MultipartFile file,
+                          Authentication authentication) {
+        return Arrays.stream(file.getContentType().split("/")).toList().get(1) + " " + file.getOriginalFilename() + " " + file.getName() + " " + file.getResource();
     }
 }

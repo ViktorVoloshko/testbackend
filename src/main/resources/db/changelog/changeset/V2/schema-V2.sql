@@ -17,6 +17,7 @@ CREATE TABLE talent
     last_name      VARCHAR(20),
     specialization VARCHAR(30),
     image          VARCHAR(300),
+    image_name     VARCHAR(100),
     CONSTRAINT pk_talent PRIMARY KEY (id)
 );
 CREATE TABLE talent_attached_file

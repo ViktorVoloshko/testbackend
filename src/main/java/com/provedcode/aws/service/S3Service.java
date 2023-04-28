@@ -18,11 +18,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.apache.http.entity.ContentType.*;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.NOT_IMPLEMENTED;
+import static org.springframework.http.HttpStatus.*;
 
 @Service
 @AllArgsConstructor
@@ -79,21 +79,28 @@ public class S3Service implements FileService {
         UserInfo user = userInfoRepository.findByLogin(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "user with login = {%s} not found".formatted(authentication.getName())));
 
-        String fileName = file.getOriginalFilename();
-
-        String userLogin = authentication.getName();
-        String fullPath = "%s/%s".formatted(userLogin, fileName);
         try {
+            String fileType = file.getContentType().split("/")[1];
+            String userLogin = authentication.getName();
+
+            String fullPath = "%s/%s".formatted(userLogin, "image.%s".formatted(fileType));
             File f = convertMultiPartToFile(file);
+
+            if (user.getTalent().getImageName() != null)
+                s3.deleteObject(awsProperties.bucket(), user.getTalent().getImageName());
 
             s3.putObject(awsProperties.bucket(), fullPath, f);
 
             log.info("image = {}", s3.getUrl(awsProperties.bucket(), fullPath).toString());
+
             user.getTalent().setImage(s3.getUrl(awsProperties.bucket(), fullPath).toString());
+            user.getTalent().setImageName(fullPath);
+
             talentRepository.save(user.getTalent());
-        } catch (RuntimeException | IOException e) {
-            throw new ResponseStatusException(NOT_IMPLEMENTED);
+        } catch (Exception e) {
+            throw new ResponseStatusException(BAD_REQUEST);
         }
+
     }
 
     private File convertMultiPartToFile(MultipartFile file)
