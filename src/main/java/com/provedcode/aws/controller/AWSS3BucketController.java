@@ -34,6 +34,6 @@ public class AWSS3BucketController {
     String testTypeOfFile(@RequestParam("file") MultipartFile file,
                           Authentication authentication) {
         return Arrays.stream(file.getContentType().split("/")).toList().get(1) + " " + file.getOriginalFilename() +
-               " " + file.getName() + " " + file.getResource();
+                " " + file.getName() + " " + file.getResource();
     }
 }

@@ -73,16 +73,16 @@ public class S3Service implements FileService {
     public void setNewUserImage(MultipartFile file, Authentication authentication) {
         if (file.isEmpty()) {
             throw new ResponseStatusException(NOT_IMPLEMENTED,
-                                              "file must be not empty, actual file-size: %s".formatted(file.getSize()));
+                    "file must be not empty, actual file-size: %s".formatted(file.getSize()));
         }
         if (photoService.isFileImage(file)) {
             throw new ResponseStatusException(NOT_IMPLEMENTED,
-                                              "not supported type: %s".formatted(file.getContentType()));
+                    "not supported type: %s".formatted(file.getContentType()));
         }
         UserInfo user = userInfoRepository.findByLogin(authentication.getName())
-                                          .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
-                                                                                         "user with login = {%s} not found".formatted(
-                                                                                                 authentication.getName())));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
+                        "user with login = {%s} not found".formatted(
+                                authentication.getName())));
 
         try {
             String fileType = file.getContentType().split("/")[1];

@@ -65,7 +65,7 @@ public class TalentProofService {
                 () -> new ResponseStatusException(NOT_FOUND, "user with this token not found"));
 
         if (talentProof.getTalent().getId().equals(userInfo.getTalent().getId()) ||
-            talentProof.getStatus().equals(ProofStatus.PUBLISHED)) {
+                talentProof.getStatus().equals(ProofStatus.PUBLISHED)) {
             return talentProof;
         } else {
             throw new ResponseStatusException(FORBIDDEN);
@@ -76,16 +76,14 @@ public class TalentProofService {
     public FullProofDTO getTalentProofs(Long talentId, Integer page, Integer size, String direction,
                                         Authentication authentication, String... sortProperties) {
         Talent talent = talentRepository.findById(talentId)
-                                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                                                                       "Talent with id = %d not found".formatted(
-                                                                                               talentId)));
-        UserInfo userInfo = userInfoRepository.findById(talentId)
-                                              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                                                                             "User with id = %d not found".formatted(
-                                                                                                     talentId)));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Talent with id = %d not found".formatted(
+                                talentId)));
+        UserInfo userInfo = userInfoRepository.findByLogin(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Page<TalentProof> proofs;
         PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.valueOf(direction.toUpperCase()),
-                                                 sortProperties
+                sortProperties
         );
         if (!userInfo.getLogin().equals(authentication.getName())) {
             proofs = talentProofRepository.findByTalentIdAndStatus(talentId, ProofStatus.PUBLISHED, pageRequest);
@@ -93,19 +91,19 @@ public class TalentProofService {
             proofs = talentProofRepository.findByTalentId(talentId, pageRequest);
         }
         return FullProofDTO.builder()
-                           .id(talent.getId())
-                           .image(talent.getImage())
-                           .firstName(talent.getFirstName())
-                           .lastName(talent.getLastName())
-                           .specialization(talent.getSpecialization())
-                           .proofs(proofs.map(i -> ProofDTO.builder()
-                                                           .id(i.getId())
-                                                           .created(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
-                                                                                     .format(i.getCreated()))
-                                                           .link(i.getLink())
-                                                           .text(i.getText())
-                                                           .status(i.getStatus()).build()))
-                           .build();
+                .id(talent.getId())
+                .image(talent.getImage())
+                .firstName(talent.getFirstName())
+                .lastName(talent.getLastName())
+                .specialization(talent.getSpecialization())
+                .proofs(proofs.map(i -> ProofDTO.builder()
+                        .id(i.getId())
+                        .created(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+                                .format(i.getCreated()))
+                        .link(i.getLink())
+                        .text(i.getText())
+                        .status(i.getStatus()).build()))
+                .build();
     }
 
     public ResponseEntity<?> addProof(AddProof addProof, long talentId, Authentication authentication) {
@@ -115,12 +113,12 @@ public class TalentProofService {
         validateTalentForCompliance.userVerification(talent, userInfo, talentId);
 
         TalentProof talentProof = TalentProof.builder()
-                                             .talent(talent.get())
-                                             .link(addProof.link())
-                                             .text(addProof.text())
-                                             .status(ProofStatus.DRAFT)
-                                             .created(LocalDateTime.now())
-                                             .build();
+                .talent(talent.get())
+                .link(addProof.link())
+                .text(addProof.text())
+                .status(ProofStatus.DRAFT)
+                .created(LocalDateTime.now())
+                .build();
         talentProofRepository.save(talentProof);
 
         URI location = ServletUriComponentsBuilder
@@ -146,7 +144,7 @@ public class TalentProofService {
             throw new ResponseStatusException(FORBIDDEN, "you cannot change proofs status to DRAFT");
         if (oldProofStatus == ProofStatus.DRAFT && proof.status() == ProofStatus.HIDDEN)
             throw new ResponseStatusException(FORBIDDEN,
-                                              "you cannot change proofs status from DRAFT to HIDDEN, it should be PUBLISHED");
+                    "you cannot change proofs status from DRAFT to HIDDEN, it should be PUBLISHED");
 
         if (proof.link() == null && proof.text() == null) {
             oldProof.setStatus(proof.status());
