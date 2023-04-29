@@ -85,7 +85,7 @@ public class TalentProofService {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.valueOf(direction.toUpperCase()),
                 sortProperties
         );
-        if (!userInfo.getLogin().equals(authentication.getName())) {
+        if (!userInfo.getTalent().getId().equals(talentId)) {
             proofs = talentProofRepository.findByTalentIdAndStatus(talentId, ProofStatus.PUBLISHED, pageRequest);
         } else {
             proofs = talentProofRepository.findByTalentId(talentId, pageRequest);
