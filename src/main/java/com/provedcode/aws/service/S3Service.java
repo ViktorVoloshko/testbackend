@@ -100,7 +100,7 @@ public class S3Service implements FileService {
 
             talentRepository.save(user.getTalent());
         } catch (Exception e) {
-            throw new ResponseStatusException(BAD_REQUEST);
+            throw new ResponseStatusException(NOT_IMPLEMENTED, "problems with connection to aws s3");
         }
 
     }
