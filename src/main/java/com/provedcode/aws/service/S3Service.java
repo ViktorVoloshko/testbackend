@@ -8,6 +8,7 @@ import com.provedcode.config.AWSProperties;
 import com.provedcode.talent.repo.TalentRepository;
 import com.provedcode.user.model.entity.UserInfo;
 import com.provedcode.user.repo.UserInfoRepository;
+import com.provedcode.util.PhotoService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -32,6 +33,7 @@ public class S3Service implements FileService {
     AmazonS3 s3;
     UserInfoRepository userInfoRepository;
     TalentRepository talentRepository;
+    PhotoService photoService;
 
     @Override
     public String saveFile(MultipartFile file) {
@@ -73,7 +75,7 @@ public class S3Service implements FileService {
         if (file.isEmpty()) {
             throw new ResponseStatusException(NOT_IMPLEMENTED, "file must be not empty, actual file-size: %s".formatted(file.getSize()));
         }
-        if (!List.of(IMAGE_JPEG.getMimeType(), IMAGE_PNG.getMimeType(), IMAGE_GIF.getMimeType()).contains(file.getContentType())) {
+        if (photoService.isFileImage(file)) {
             throw new ResponseStatusException(NOT_IMPLEMENTED, "not supported type: %s".formatted(file.getContentType()));
         }
         UserInfo user = userInfoRepository.findByLogin(authentication.getName())
@@ -84,7 +86,7 @@ public class S3Service implements FileService {
             String userLogin = authentication.getName();
 
             String fullPath = "%s/%s".formatted(userLogin, "image.%s".formatted(fileType));
-            File f = convertMultiPartToFile(file);
+            File f = photoService.degradePhoto(convertMultiPartToFile(file));
 
             if (user.getTalent().getImageName() != null)
                 s3.deleteObject(awsProperties.bucket(), user.getTalent().getImageName());

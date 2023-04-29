@@ -19,7 +19,7 @@ public class AWSS3BucketController {
     @PreAuthorize("hasRole('TALENT')")
     @PostMapping("/image/upload")
     public void setNewUserImage(@RequestParam("file") MultipartFile file,
-                              Authentication authentication) {
+                                Authentication authentication) {
         fileService.setNewUserImage(file, authentication);
     }
 
