@@ -2,9 +2,10 @@ package com.provedcode.sponsor.service;
 
 import com.provedcode.config.PageProperties;
 import com.provedcode.kudos.model.entity.Kudos;
-import com.provedcode.sponsor.model.dto.SponsorEditDTO;
 import com.provedcode.sponsor.model.entity.Sponsor;
+import com.provedcode.sponsor.model.request.EditSponsor;
 import com.provedcode.sponsor.repository.SponsorRepository;
+import com.provedcode.sponsor.utill.ValidateSponsorForCompliance;
 import com.provedcode.user.model.entity.UserInfo;
 import com.provedcode.user.repo.UserInfoRepository;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Service
 @AllArgsConstructor
@@ -27,70 +29,64 @@ public class SponsorService {
     PageProperties pageProperties;
     SponsorRepository sponsorRepository;
     UserInfoRepository userInfoRepository;
+    ValidateSponsorForCompliance validateSponsorForCompliance;
 
     @Transactional(readOnly = true)
-    public Page<Sponsor> getAllSponsors(Optional<Integer> page, Optional<Integer> size) {
-        if (page.orElse(pageProperties.defaultPageNum()) < 0) {
-            throw new ResponseStatusException(BAD_REQUEST, "'page' query parameter must be greater than or equal to 0");
-        }
-        if (size.orElse(pageProperties.defaultPageSize()) <= 0) {
-            throw new ResponseStatusException(BAD_REQUEST, "'size' query parameter must be greater than or equal to 1");
-        }
-        return sponsorRepository.findAll(PageRequest.of(page.orElse(pageProperties.defaultPageNum()),
-                size.orElse(pageProperties.defaultPageSize())));
+    public Page<Sponsor> getAllSponsors(Integer page, Integer size) {
+        return sponsorRepository.findAll(PageRequest.of(page, size));
     }
 
     @Transactional(readOnly = true)
     public Sponsor getSponsorById(long id, Authentication authentication) {
-        Sponsor sponsor = sponsorRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(NOT_FOUND, String.format("sponsor with id = %d not found", id)));
-        UserInfo user = userInfoRepository.findByLogin(authentication.getName())
-                .orElseThrow(() -> new ResponseStatusException(NOT_IMPLEMENTED, "login is not valid"));
-
-        if (!sponsor.getId().equals(user.getSponsor().getId()))
-            throw new ResponseStatusException(FORBIDDEN, "The user cannot view someone else's profile");
-        return sponsor;
+        Optional<UserInfo> user = userInfoRepository.findByLogin(authentication.getName());
+        Optional<Sponsor> sponsor = sponsorRepository.findById(id);
+        validateSponsorForCompliance.userVerification(sponsor, user, id);
+        return sponsor.get();
     }
 
-    public Sponsor editSponsorById(long id, SponsorEditDTO sponsorEditDTO, Authentication authentication) {
-        Sponsor sponsor = sponsorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "sponsor with id = %s not found".formatted(id)));
-        UserInfo user = userInfoRepository.findByLogin(authentication.getName())
-                .orElseThrow(() -> new ResponseStatusException(NOT_IMPLEMENTED, "login is not valid"));
-        if (!sponsor.getId().equals(user.getSponsor().getId())) {
-            throw new ResponseStatusException(FORBIDDEN, "The user cannot edit someone else's profile");
-        }
+    public Sponsor editSponsorById(long id, EditSponsor editSponsor, Authentication authentication) {
+        Optional<UserInfo> user = userInfoRepository.findByLogin(authentication.getName());
+        Optional<Sponsor> sponsor = sponsorRepository.findById(id);
+        validateSponsorForCompliance.userVerification(sponsor, user, id);
+        checkEditSponsorNull(editSponsor);
 
-        if (sponsorEditDTO.firstName() != null) {
-            sponsor.setFirstName(sponsorEditDTO.firstName());
+        Sponsor editableSponsor = sponsor.get();
+        if (editSponsor.firstName() != null) {
+            editableSponsor.setFirstName(editSponsor.firstName());
         }
-        if (sponsorEditDTO.lastName() != null) {
-            sponsor.setLastName(sponsorEditDTO.lastName());
+        if (editSponsor.lastName() != null) {
+            editableSponsor.setLastName(editSponsor.lastName());
         }
-        if (sponsorEditDTO.image() != null) {
-            sponsor.setImage(sponsorEditDTO.image());
+        if (editSponsor.image() != null) {
+            editableSponsor.setImage(editSponsor.image());
         }
-        if (sponsorEditDTO.countOfKudos() != null) {
-            if (sponsorEditDTO.countOfKudos() > 0) {
-                sponsor.setAmountKudos(sponsor.getAmountKudos() + sponsorEditDTO.countOfKudos());
+        if (editSponsor.countOfKudos() != null) {
+            if (editSponsor.countOfKudos() > 0) {
+                editableSponsor.setAmountKudos(editableSponsor.getAmountKudos() + editSponsor.countOfKudos());
             } else {
                 throw new ResponseStatusException(BAD_REQUEST, "count of kudos must be greater than 0");
             }
         }
-        return sponsorRepository.save(sponsor);
+        return sponsorRepository.save(editableSponsor);
     }
 
     public void deleteSponsor(long id, Authentication authentication) {
-        Sponsor sponsor = sponsorRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "sponsor with id = %s not found".formatted(id)));
-        UserInfo user = userInfoRepository.findByLogin(authentication.getName())
-                .orElseThrow(() -> new ResponseStatusException(NOT_IMPLEMENTED, "login is not valid"));
-        if (!sponsor.getId().equals(user.getSponsor().getId())) {
-            throw new ResponseStatusException(FORBIDDEN, "The user cannot edit someone else's profile");
-        }
+        Optional<UserInfo> user = userInfoRepository.findByLogin(authentication.getName());
+        Optional<Sponsor> sponsor = sponsorRepository.findById(id);
+        validateSponsorForCompliance.userVerification(sponsor, user, id);
 
-        List<Kudos> kudosList = sponsor.getKudoses().stream().map(i -> {i.setSponsor(null); return i;}).toList();
-        sponsor.setKudoses(kudosList);
-        userInfoRepository.delete(user);
+        Sponsor deletableSponsor = sponsor.get();
+        List<Kudos> kudosList = deletableSponsor.getKudoses().stream().map(i -> {
+            i.setSponsor(null);
+            return i;
+        }).toList();
+        deletableSponsor.setKudoses(kudosList);
+        userInfoRepository.delete(user.get());
+    }
+
+    private void checkEditSponsorNull(EditSponsor editSponsor) {
+        if (editSponsor.firstName() == null && editSponsor.lastName() == null && editSponsor.image() == null &&
+            editSponsor.countOfKudos() == null)
+            throw new ResponseStatusException(FORBIDDEN, "you did not provide information to make changes");
     }
 }

@@ -1,56 +1,18 @@
 package com.provedcode.handlers;
 
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @ControllerAdvice
 public class TalentExceptionHandler {
-    @ExceptionHandler(ResponseStatusException.class)
-    private ResponseEntity<?> responseStatusExceptionHandler(ResponseStatusException exception) {
-        return ResponseEntity.status(exception.getStatusCode()).body(exception.getBody());
-    }
-
-    @ExceptionHandler({SQLException.class})
-    public void printSQLException(SQLException ex) {
-        for (Throwable e : ex) {
-            if (e instanceof SQLException) {
-                if (ignoreSQLException(((SQLException) e).getSQLState()) == false) {
-
-                    e.printStackTrace(System.err);
-                    System.err.println("SQLState: " +
-                            ((SQLException) e).getSQLState());
-
-                    System.err.println("Error Code: " +
-                            ((SQLException) e).getErrorCode());
-
-                    System.err.println("Message: " + e.getMessage());
-
-                    Throwable t = ex.getCause();
-                    while (t != null) {
-                        System.out.println("Cause: " + t);
-                        t = t.getCause();
-                    }
-                }
-            }
-        }
-    }
-
     public static boolean ignoreSQLException(String sqlState) {
 
         if (sqlState == null) {
@@ -67,6 +29,43 @@ public class TalentExceptionHandler {
             return true;
 
         return false;
+    }
+
+    @ExceptionHandler({SQLException.class})
+    public void printSQLException(SQLException ex) {
+        for (Throwable e : ex) {
+            if (e instanceof SQLException) {
+                if (ignoreSQLException(((SQLException) e).getSQLState()) == false) {
+
+                    e.printStackTrace(System.err);
+                    System.err.println("SQLState: " +
+                                       ((SQLException) e).getSQLState());
+
+                    System.err.println("Error Code: " +
+                                       ((SQLException) e).getErrorCode());
+
+                    System.err.println("Message: " + e.getMessage());
+
+                    Throwable t = ex.getCause();
+                    while (t != null) {
+                        System.out.println("Cause: " + t);
+                        t = t.getCause();
+                    }
+                }
+            }
+        }
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    private ResponseEntity<?> responseStatusExceptionHandler(ResponseStatusException exception) {
+        return ResponseEntity.status(exception.getStatusCode()).body(exception.getBody());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    private ResponseEntity<?> responseStatusExceptionHandler(ConstraintViolationException exception) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, exception.getMessage(), exception.toString());
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
 //    @ExceptionHandler({ Exception.class })

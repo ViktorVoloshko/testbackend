@@ -1,10 +1,10 @@
-package com.provedcode.sponsor.model.dto;
+package com.provedcode.sponsor.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 @Builder
-public record SponsorEditDTO(
+public record EditSponsor(
         Long id,
         @JsonProperty("first_name")
         String firstName,

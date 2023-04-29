@@ -19,11 +19,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.apache.http.entity.ContentType.*;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NOT_IMPLEMENTED;
 
 @Service
 @AllArgsConstructor
@@ -73,13 +72,17 @@ public class S3Service implements FileService {
     @Override
     public void setNewUserImage(MultipartFile file, Authentication authentication) {
         if (file.isEmpty()) {
-            throw new ResponseStatusException(NOT_IMPLEMENTED, "file must be not empty, actual file-size: %s".formatted(file.getSize()));
+            throw new ResponseStatusException(NOT_IMPLEMENTED,
+                                              "file must be not empty, actual file-size: %s".formatted(file.getSize()));
         }
         if (photoService.isFileImage(file)) {
-            throw new ResponseStatusException(NOT_IMPLEMENTED, "not supported type: %s".formatted(file.getContentType()));
+            throw new ResponseStatusException(NOT_IMPLEMENTED,
+                                              "not supported type: %s".formatted(file.getContentType()));
         }
         UserInfo user = userInfoRepository.findByLogin(authentication.getName())
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "user with login = {%s} not found".formatted(authentication.getName())));
+                                          .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
+                                                                                         "user with login = {%s} not found".formatted(
+                                                                                                 authentication.getName())));
 
         try {
             String fileType = file.getContentType().split("/")[1];
@@ -113,5 +116,4 @@ public class S3Service implements FileService {
         fos.close();
         return convFile;
     }
-
 }
