@@ -544,7 +544,7 @@ insert into talent_proofs (talent_id, link, text, status, created)
 values ((select id from talent order by id desc limit 1), 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'text to third proof', 'DRAFT', '2023-06-04 16:00:19');
 
 insert into user_info (talent_id, login, password)
-values ((select id from talent order by id desc limit 1), '$2a$10$D4KM50WemOahkFv1fkrPX.MvVESsE0TYWlkh5TypTE/q4nlv8ooyS', 'password');
+values ((select id from talent order by id desc limit 1), 'IhorKopieichykov@gmail.com', '$2a$10$D4KM50WemOahkFv1fkrPX.MvVESsE0TYWlkh5TypTE/q4nlv8ooyS');
 insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
        (select authority.id from authority where id = 1));
@@ -585,11 +585,11 @@ insert into user_authorities (user_id, authority_id)
 values ((select id from user_info order by id desc limit 1),
        (select authority.id from authority where id = 2) );
 
-insert into kudos (amount_kudos, sponsor_id, proof_id)
+insert into kudos (amount, sponsor_id, proof_id)
 values (100, 1, 1);
-insert into kudos (amount_kudos, sponsor_id, proof_id)
+insert into kudos (amount, sponsor_id, proof_id)
 values (200, 2, 1);
-insert into kudos (amount_kudos, sponsor_id, proof_id)
+insert into kudos (amount, sponsor_id, proof_id)
 values (200, 3, 1);
-insert into kudos (amount_kudos, sponsor_id, proof_id)
+insert into kudos (amount, sponsor_id, proof_id)
 values (300, 4, 1);

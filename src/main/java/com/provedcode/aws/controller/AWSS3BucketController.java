@@ -39,6 +39,7 @@ public class AWSS3BucketController {
     @PostMapping("/aws/test")
     String testTypeOfFile(@RequestParam("file") MultipartFile file,
                           Authentication authentication) {
-        return Arrays.stream(file.getContentType().split("/")).toList().get(1) + " " + file.getOriginalFilename() + " " + file.getName() + " " + file.getResource();
+        return Arrays.stream(file.getContentType().split("/")).toList().get(1) + " " + file.getOriginalFilename() +
+                " " + file.getName() + " " + file.getResource();
     }
 }

@@ -8,27 +8,35 @@ import com.provedcode.talent.model.request.AddProof;
 import com.provedcode.talent.service.TalentProofService;
 import com.provedcode.util.annotations.doc.controller.proof.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v2/talents")
+@Validated
 public class TalentProofController {
     TalentProofService talentProofService;
     TalentProofMapper talentProofMapper;
 
     @GetAllProofsApiDoc
     @GetMapping("/proofs")
-    Page<ProofDTO> getAllProofs(@RequestParam(value = "page") Optional<Integer> page,
-                                @RequestParam(value = "size") Optional<Integer> size,
-                                @RequestParam(value = "order-by") Optional<String> orderBy,
+    Page<ProofDTO> getAllProofs(@RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer page,
+                                @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer size,
+                                @RequestParam(value = "order-by", defaultValue = "ASC")
+                                @Pattern(regexp = "asc|desc",
+                                        flags = {Pattern.Flag.CASE_INSENSITIVE},
+                                        message = "'direction' query param must be equals ASC or DESC")
+                                String orderBy,
                                 @RequestParam(value = "sort-by", defaultValue = "created") String... sortBy) {
         return talentProofService.getAllProofsPage(page, size, orderBy, sortBy).map(talentProofMapper::toProofDTO);
     }
@@ -46,9 +54,13 @@ public class TalentProofController {
     @PreAuthorize("hasRole('TALENT')")
     FullProofDTO getTalentInformationWithProofs(Authentication authentication,
                                                 @PathVariable("talent-id") Long talentId,
-                                                @RequestParam(value = "page") Optional<Integer> page,
-                                                @RequestParam(value = "size") Optional<Integer> size,
-                                                @RequestParam(value = "order-by") Optional<String> orderBy,
+                                                @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer page,
+                                                @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer size,
+                                                @RequestParam(value = "order-by", defaultValue = "ASC")
+                                                @Pattern(regexp = "asc|desc",
+                                                        flags = {Pattern.Flag.CASE_INSENSITIVE},
+                                                        message = "'direction' query param must be equals ASC or DESC")
+                                                String orderBy,
                                                 @RequestParam(value = "sort-by", defaultValue = "created") String... sortBy) {
         return talentProofService.getTalentProofs(talentId, page, size, orderBy, authentication, sortBy);
     }

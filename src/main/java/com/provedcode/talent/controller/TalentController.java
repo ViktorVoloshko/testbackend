@@ -1,5 +1,6 @@
 package com.provedcode.talent.controller;
 
+import com.provedcode.config.PageProperties;
 import com.provedcode.talent.mapper.TalentMapper;
 import com.provedcode.talent.model.dto.FullTalentDTO;
 import com.provedcode.talent.model.dto.ShortTalentDTO;
@@ -12,12 +13,16 @@ import com.provedcode.util.annotations.doc.controller.talent.GetTalentApiDoc;
 import com.provedcode.util.annotations.doc.controller.talent.PatchEditTalentApiDoc;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -27,15 +32,16 @@ import java.util.Optional;
 @AllArgsConstructor
 @RequestMapping("/api/v2")
 @Tag(name = "talent", description = "Talent API")
+@Validated
 public class TalentController {
     TalentService talentService;
     TalentMapper talentMapper;
 
     @GetAllTalentsApiDoc
     @GetMapping("/talents")
-    @ResponseStatus(HttpStatus.OK)
-    Page<ShortTalentDTO> getTalents(@RequestParam(value = "page") Optional<Integer> page,
-                                    @RequestParam(value = "size") Optional<Integer> size) {
+    @Validated
+    Page<ShortTalentDTO> getTalents(@RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer page,
+                                    @RequestParam(value = "size", defaultValue = "5") @Min(1) @Max(1000) Integer size) {
         return talentService.getTalentsPage(page, size).map(talentMapper::talentToShortTalentDTO);
     }
 
