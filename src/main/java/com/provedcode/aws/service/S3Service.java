@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,6 +29,7 @@ import static org.springframework.http.HttpStatus.*;
 @Service
 @AllArgsConstructor
 @Slf4j
+@Transactional
 public class S3Service implements FileService {
     AWSProperties awsProperties;
     AmazonS3 s3;
@@ -73,10 +75,10 @@ public class S3Service implements FileService {
     @Override
     public void setNewUserImage(MultipartFile file, Authentication authentication) {
         if (file.isEmpty()) {
-            throw new ResponseStatusException(NOT_IMPLEMENTED, "file must be not empty, actual file-size: %s".formatted(file.getSize()));
+            throw new ResponseStatusException(BAD_REQUEST, "file must be not empty, actual file-size: %s".formatted(file.getSize()));
         }
         if (photoService.isFileImage(file)) {
-            throw new ResponseStatusException(NOT_IMPLEMENTED, "not supported type: %s".formatted(file.getContentType()));
+            throw new ResponseStatusException(BAD_REQUEST, "not supported type: %s".formatted(file.getContentType()));
         }
         UserInfo user = userInfoRepository.findByLogin(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "user with login = {%s} not found".formatted(authentication.getName())));
@@ -100,7 +102,7 @@ public class S3Service implements FileService {
 
             talentRepository.save(user.getTalent());
         } catch (Exception e) {
-            throw new ResponseStatusException(NOT_IMPLEMENTED, "problems with connection to aws s3");
+            throw new ResponseStatusException(SERVICE_UNAVAILABLE, "problems with connection to aws s3");
         }
 
     }

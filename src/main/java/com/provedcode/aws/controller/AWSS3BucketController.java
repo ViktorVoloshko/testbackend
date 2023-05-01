@@ -1,6 +1,9 @@
 package com.provedcode.aws.controller;
 
 import com.provedcode.aws.service.FileService;
+import com.provedcode.util.annotations.doc.controller.aws.GetAllAWSBucketFilesDevApiDoc;
+import com.provedcode.util.annotations.doc.controller.aws.GetFileInfoDevApiDoc;
+import com.provedcode.util.annotations.doc.controller.aws.PostSetNewUserImageApiDoc;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -16,6 +19,7 @@ import java.util.List;
 public class AWSS3BucketController {
     FileService fileService;
 
+    @PostSetNewUserImageApiDoc
     @PreAuthorize("hasRole('TALENT')")
     @PostMapping("/image/upload")
     public void setNewUserImage(@RequestParam("file") MultipartFile file,
@@ -23,12 +27,14 @@ public class AWSS3BucketController {
         fileService.setNewUserImage(file, authentication);
     }
 
+    @GetFileInfoDevApiDoc
     @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/files")
     List<String> getAllFiles() {
         return fileService.listAllFiles();
     }
 
+    @GetAllAWSBucketFilesDevApiDoc
     @PreAuthorize("hasRole('TALENT')")
     @PostMapping("/aws/test")
     String testTypeOfFile(@RequestParam("file") MultipartFile file,
