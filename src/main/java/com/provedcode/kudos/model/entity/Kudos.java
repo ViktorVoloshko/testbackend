@@ -17,8 +17,8 @@ public class Kudos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Column(name = "amount_kudos")
-    private Long amountKudos;
+    @Column(name = "amount")
+    private Long amount;
     @ManyToOne
     @JoinColumn(name = "sponsor_id")
     private Sponsor sponsor;

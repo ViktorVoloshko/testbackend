@@ -35,6 +35,9 @@ public class Talent {
     @URL
     @Column(name = "image", length = 300)
     private String image;
+    @Column(name = "image_name", length = 100)
+    private String imageName;
+
     @OneToOne(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
     private TalentDescription talentDescription;
     @OneToMany(mappedBy = "talent", cascade = CascadeType.ALL, orphanRemoval = true)
