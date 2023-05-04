@@ -3,6 +3,7 @@
 FROM openjdk:17
 WORKDIR /testbackend/
 COPY . .
+RUN chmod 755 ./mvnw
 RUN ./mvnw clean package
 
 FROM openjdk:17
