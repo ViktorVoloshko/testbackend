@@ -9,5 +9,5 @@ RUN ./mvnw clean package
 FROM openjdk:17
 WORKDIR /root/
 COPY --from=0 /testbackend/target/* ./
-CMD ["java", "-jar", "./target/*.jar"]
+CMD ["java", "-jar", "./*.jar"]
 EXPOSE 8080
